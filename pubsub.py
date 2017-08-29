@@ -54,7 +54,7 @@ def receive_message(counter):
 
 
 # ----------------------------------------------
-# Fabricate a simple stock prrice using 
+# Fabricate a simple stock price using 
 # random movements 
 # ----------------------------------------------
 
@@ -69,6 +69,10 @@ def today_timestamp():
 	d = datetime.date.today()
 	ymd = d.isoformat()
 	return ymd
+
+# ----------------------------------------------
+# Generating only 10 stock prices for testing 
+# ----------------------------------------------
 
 def deliver_stock_price(price):
 	counter = 1 
