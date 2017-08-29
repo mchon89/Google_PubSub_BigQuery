@@ -47,7 +47,7 @@ def publish_message(data):
 	print 'Message ID:{} published to topic {}'.format(message_id,topic_name)
 
 # ----------------------------------------------
-# Fabricatiing Stock Price
+# Fabricating Stock Price
 # ----------------------------------------------
 	
 def stock_price(price):
@@ -62,6 +62,10 @@ def today_timestamp():
 	ymd = d.isoformat()
 	return ymd
 
+# ----------------------------------------------
+# Generating 100 stock prices
+# ----------------------------------------------
+
 def deliver_stock_price(price):
 	counter = 1 
 	today = today_timestamp()
@@ -69,7 +73,7 @@ def deliver_stock_price(price):
 	quote = 'GOOGL'
 	name = 'Alphabet Inc.'
 	stock = price
-	for i in xrange(0,100):
+	for i in xrange(0,100): # change this to a multiple of 100 or 10
 		hms_time = hms_time + datetime.timedelta(0,1)
 		stock = stock_price(stock)
 		data = '{},{},{},{},{}'.format(today,hms_time.strftime('%H:%M:%S'),quote,name,stock)
