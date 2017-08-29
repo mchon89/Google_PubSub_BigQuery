@@ -55,6 +55,10 @@ def today_timestamp():
 	ymd = d.isoformat()
 	return ymd
 
+# ----------------------------------------------
+# Generating 100 stock prices 
+# ----------------------------------------------
+
 def deliver_stock_price(price):
 	today = today_timestamp()
 	hms_time = datetime.datetime.strptime('9:30:00', '%H:%M:%S')
@@ -68,6 +72,10 @@ def deliver_stock_price(price):
 		publish_message(data)
 		counter = counter + 1 
 	return counter
+
+# ----------------------------------------------
+# Generating 100 stock prices 
+# ----------------------------------------------
 
 def stream_data_bigquery(counter):
 	pubsub_client = pubsub.Client()
@@ -87,7 +95,7 @@ def stream_data_bigquery(counter):
 				print '* {}: {}, {}'.format(message.message_id, message.data, message.attributes)
 				subscriber.acknowledge([ack_id for ack_id, message in results])
 				batch.append(message.data)
-				if len(batch) < 5:
+				if len(batch) < 20:
 					i = i + 1
 				else:
 					for j in xrange(0,len(batch)):
