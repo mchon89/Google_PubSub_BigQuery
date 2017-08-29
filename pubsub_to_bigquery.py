@@ -17,11 +17,14 @@ from pprint import pprint
 from google.cloud import pubsub
 from google.cloud import bigquery
 
+# ----------------------------------------------
+# Basic PubSub 
+# ----------------------------------------------
 
 topic_name = 'stock'
 subscriber_name = 'stockReceiver'
-dataset = 'demo_stock'
-table = 'google'
+dataset_name = 'demo_stock'
+table_name = 'google'
 
 def create_topic():	
 	pubsub_client = pubsub.Client()
@@ -43,6 +46,10 @@ def publish_message(data):
 	message_id = topic.publish(data)
 	print 'Message ID:{} published to topic {}'.format(message_id,topic_name)
 
+# ----------------------------------------------
+# Fabricatiing Stock Price
+# ----------------------------------------------
+	
 def stock_price(price):
 	if random.random() > .5: 
 		price = price + random.random()
@@ -55,11 +62,8 @@ def today_timestamp():
 	ymd = d.isoformat()
 	return ymd
 
-# ----------------------------------------------
-# Generating 100 stock prices 
-# ----------------------------------------------
-
 def deliver_stock_price(price):
+	counter = 1 
 	today = today_timestamp()
 	hms_time = datetime.datetime.strptime('9:30:00', '%H:%M:%S')
 	quote = 'GOOGL'
@@ -74,7 +78,8 @@ def deliver_stock_price(price):
 	return counter
 
 # ----------------------------------------------
-# Generating 100 stock prices 
+# Streaming the data to BigQuery
+# Batch Size = 10
 # ----------------------------------------------
 
 def stream_data_bigquery(counter):
@@ -95,7 +100,7 @@ def stream_data_bigquery(counter):
 				print '* {}: {}, {}'.format(message.message_id, message.data, message.attributes)
 				subscriber.acknowledge([ack_id for ack_id, message in results])
 				batch.append(message.data)
-				if len(batch) < 20:
+				if len(batch) < 10: # batch size
 					i = i + 1
 				else:
 					for j in xrange(0,len(batch)):
@@ -108,6 +113,8 @@ def stream_data_bigquery(counter):
 						else:
 							print('Errors:')
 							pprint(errors)
+					del batch[:]
+					i = i + 1
 
 if __name__ == "__main__":
 	parser = argparse.ArgumentParser()
@@ -118,5 +125,10 @@ if __name__ == "__main__":
 	create_subscriber()
 	counter = deliver_stock_price(args.price)
 	stream_data_bigquery(counter)
+
+
+	
+
+
 
 
